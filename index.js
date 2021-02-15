@@ -18,8 +18,24 @@ db.authenticate()
 .catch( err => console.log('Error: ' + err))
 const app = express()
 
-// routes 
-app.get('/', (req, res) => res.send('INDEX'))
+// middleware handlebars
+app.engine('handlebars', exphbs({ 
+    defaultLayout: 'main',
+    runtimeOptions: {
+        allowProtoPropertiesByDefault: true,
+        allowProtoMethodsByDefault: true,
+    }
+}))
+app.set('view engine', 'handlebars')
+
+// Body parser middleware
+app.use(bodyParser.urlencoded({ extended: false }))
+
+// set static folder
+app.use(express.static(path.join(__dirname, 'public')))
+
+// Index routes 
+app.get('/', (req, res) => res.render('index', { layout: 'landing'}))
 
 // gig routes
 app.use('/gigs', require('./routes/gigs'))
